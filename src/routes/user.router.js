@@ -19,8 +19,9 @@ router
 router
   .route("/wishlist")
   .get(WishlistController.getWishlistByUserId)
-  .post(WishlistController.addToWishlist)
-  .delete(WishlistController.removeFromWishlist);
+  .post(WishlistController.addToWishlist);
+
+router.delete("/wishlist/:productId", WishlistController.removeFromWishlist);
 
 router
   .route("/:id")

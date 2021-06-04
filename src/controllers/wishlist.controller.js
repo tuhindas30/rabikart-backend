@@ -49,7 +49,7 @@ const addToWishlist = async (req, res, next) => {
 };
 
 const removeFromWishlist = async (req, res, next) => {
-  const { productId } = req.body;
+  const { productId } = req.params;
   const { userId } = req;
   try {
     await doesProductExist(productId);
