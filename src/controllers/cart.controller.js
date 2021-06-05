@@ -6,6 +6,7 @@ const {
   createNewCart,
   doesProductExist,
 } = require("./helpers");
+const { Cart } = require("../models/cart.model");
 
 const getCartByUserId = async (req, res, next) => {
   const { userId } = req;
@@ -88,4 +89,49 @@ const updateItemQuantity = async (req, res, next) => {
   }
 };
 
-module.exports = { getCartByUserId, addToCart, updateItemQuantity };
+const updateCart = async (req, res, next) => {
+  const cartItems = req.body;
+  const { userId } = req;
+  try {
+    if (!(cartItems instanceof Array)) {
+      throw new HttpError(400, "cart should be an array");
+    }
+    let cart = await findCartByUserId(userId);
+    if (cart) {
+      for (let i = 0; i < cartItems.length; i++) {
+        let item = cartItems[i];
+        await doesProductExist(item.product._id);
+        cart = await handleUpdateCartItem(
+          cart,
+          item.product._id,
+          item.quantity
+        );
+      }
+      return res.json({
+        status: "SUCCESS",
+        data: cart,
+        message: "Cart updated successfully",
+      });
+    }
+    let newCart = new Cart({ user: userId });
+    cartItems.forEach((item) => {
+      newCart.items.push({
+        product: item.product._id,
+        quantity: item.quantity,
+      });
+    });
+    await newCart.populate("items.product").execPopulate();
+    newCart.calculateTotalPrice();
+    newCart = await newCart.save();
+    console.log({ newCart });
+    return res.json({
+      status: "SUCCESS",
+      data: newCart,
+      message: "New cart created and updated successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getCartByUserId, addToCart, updateItemQuantity, updateCart };

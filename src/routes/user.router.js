@@ -16,6 +16,8 @@ router
   .post(CartController.addToCart)
   .put(CartController.updateItemQuantity);
 
+router.post("/cart/sync", CartController.updateCart);
+
 router
   .route("/wishlist")
   .get(WishlistController.getWishlistByUserId)
