@@ -10,7 +10,6 @@ app.use(cors());
 app.use(bodyParser.json());
 initializeMongoDB(URI);
 
-const insertintodb = require("./routes/insertintodb.router");
 const authRouter = require("./routes/auth.router");
 const productRouter = require("./routes/products.router");
 const categoryRouter = require("./routes/category.router");
@@ -22,7 +21,6 @@ app.get("/", (req, res) => {
   res.send("Welcome to RabiKart server");
 });
 
-app.use("/insert", insertintodb);
 app.use("/products", productRouter);
 app.use("/categories", categoryRouter);
 app.use("/auth", authRouter);
