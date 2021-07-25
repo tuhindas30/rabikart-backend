@@ -46,12 +46,9 @@ const changePassword = (req, _, next) => {
 };
 
 const validateCartItem = (req, _, next) => {
-  const { productId, quantity } = req.body;
+  const { productId } = req.body;
   if (!isMongoId(productId)) {
     throw new HttpError(400, "Not a valid product ID");
-  }
-  if (!isNumeric(quantity)) {
-    throw new HttpError(400, "Not a valid quantity");
   }
   next();
 };
@@ -59,12 +56,9 @@ const validateCartItem = (req, _, next) => {
 const validateCartSyncedItem = (req, _, next) => {
   const cartItems = req.body;
   for (let i = 0; i < cartItems.length; i++) {
-    let { product, quantity } = cartItems[i];
+    let { product } = cartItems[i];
     if (!isMongoId(product._id)) {
       throw new HttpError(400, "Not a valid product ID");
-    }
-    if (!isNumeric(quantity)) {
-      throw new HttpError(400, "Not a valid quantity");
     }
   }
   next();
