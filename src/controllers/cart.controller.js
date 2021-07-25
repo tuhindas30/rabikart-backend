@@ -100,7 +100,6 @@ const updateCart = async (req, res, next) => {
     if (cart) {
       for (let i = 0; i < cartItems.length; i++) {
         let item = cartItems[i];
-        console.log(item);
         await doesProductExist(item.product._id);
         cart = await handleUpdateCartItem(
           cart,
