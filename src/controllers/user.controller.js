@@ -36,7 +36,11 @@ const updateUserById = async (req, res, next) => {
   const { id } = req.params;
   const { email } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(id, { email }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      id,
+      { email },
+      { new: true, runValidators: true }
+    );
     if (!user) {
       throw new HttpError(404, "User does not exist");
     }
@@ -51,12 +55,10 @@ const updateUserById = async (req, res, next) => {
 };
 
 const deleteUserById = async (req, res, next) => {
-  const { userId } = req.body;
+  const { id } = req.params;
   try {
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      throw new HttpError(404, "User does not exist");
-    }
+    await doesUserExist(id);
+    await User.findByIdAndDelete(id);
     res.json({
       status: "SUCCESS",
       data: {},
