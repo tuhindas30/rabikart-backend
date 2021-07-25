@@ -60,9 +60,9 @@ const addToCart = async (req, res, next) => {
 const updateItemQuantity = async (req, res, next) => {
   const { productId, quantity } = req.body;
   const { userId } = req;
-  let cart = await findCartByUserId(userId);
   try {
     await doesProductExist(productId);
+    let cart = await findCartByUserId(userId);
     if (cart) {
       cart = await handleUpdateCartItem(cart, productId, quantity);
       if (quantity < 1) {
@@ -93,13 +93,14 @@ const updateCart = async (req, res, next) => {
   const cartItems = req.body;
   const { userId } = req;
   try {
-    if (!(cartItems instanceof Array)) {
+    if (!Array.isArray(cartItems)) {
       throw new HttpError(400, "cart should be an array");
     }
     let cart = await findCartByUserId(userId);
     if (cart) {
       for (let i = 0; i < cartItems.length; i++) {
         let item = cartItems[i];
+        console.log(item);
         await doesProductExist(item.product._id);
         cart = await handleUpdateCartItem(
           cart,
@@ -123,7 +124,6 @@ const updateCart = async (req, res, next) => {
     await newCart.populate("items.product").execPopulate();
     newCart.calculateTotalPrice();
     newCart = await newCart.save();
-    console.log({ newCart });
     return res.json({
       status: "SUCCESS",
       data: newCart,

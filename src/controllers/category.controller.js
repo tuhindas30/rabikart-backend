@@ -20,7 +20,6 @@ const getAllCategory = async (_, res, next) => {
 
 const getCategoryById = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const category = await Category.findById(id);
     doesCategoryExist(category);

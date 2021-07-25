@@ -8,7 +8,7 @@ const findCartByUserId = async (userId) => {
   let userCart = await Cart.findOne({ user: userId }).populate("items.product");
   if (userCart) {
     userCart.calculateTotalPrice();
-    userCart = await userCart.save();
+    await userCart.save();
   }
   return userCart;
 };
@@ -31,7 +31,7 @@ const handleDuplicateCartItems = async (cart, productId, quantity) => {
   }
   await cart.populate("items.product").execPopulate();
   cart.calculateTotalPrice();
-  cart = await cart.save();
+  await cart.save();
   return cart;
 };
 
@@ -41,7 +41,7 @@ const handleDuplicateWishlistItems = async (wishlist, productId) => {
   }
   wishlist.items.push({ product: productId });
   await wishlist.populate("items.product").execPopulate();
-  wishlist = await wishlist.save();
+  await wishlist.save();
   return wishlist;
 };
 
@@ -56,7 +56,7 @@ const handleUpdateCartItem = async (cart, productId, quantity) => {
   }
   await cart.populate("items.product").execPopulate();
   cart.calculateTotalPrice();
-  cart = await cart.save();
+  await cart.save();
   return cart;
 };
 
@@ -72,7 +72,7 @@ const createNewCart = async (userId, productId, quantity) => {
   });
   await newCart.populate("items.product").execPopulate();
   newCart.calculateTotalPrice();
-  newCart = await newCart.save();
+  await newCart.save();
   return newCart;
 };
 
@@ -86,7 +86,7 @@ const createNewWishlist = async (userId, productId) => {
     ],
   });
   await newWishlist.populate("items.product").execPopulate();
-  newWishlist = await newWishlist.save();
+  await newWishlist.save();
   return newWishlist;
 };
 
