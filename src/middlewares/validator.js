@@ -5,7 +5,6 @@ const {
   isLowercase,
   isStrongPassword,
   isMongoId,
-  isNumeric,
 } = require("validator");
 const { HttpError } = require("../utils/helper");
 
