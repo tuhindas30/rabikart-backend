@@ -3,6 +3,7 @@ const { Wishlist } = require("../models/wishlist.model");
 const { Product } = require("../models/product.model");
 const { User } = require("../models/user.model");
 const { HttpError } = require("../utils/helper");
+const { Order } = require("../models/order.model");
 
 const findCartByUserId = async (userId) => {
   let userCart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -90,6 +91,19 @@ const createNewWishlist = async (userId, productId) => {
   return newWishlist;
 };
 
+const placeOrder = async ({ userId, items, totalPrice, data }) => {
+  let orders = new Order({
+    user: userId,
+    items,
+    totalPrice,
+    ...data,
+  });
+  await orders.initiateOrder();
+  // await orders.populate("items.product").execPopulate();
+  await orders.save();
+  return orders;
+};
+
 const doesProductExist = async (productId) => {
   const product = await Product.findById(productId).populate("category");
   if (!product) {
@@ -120,6 +134,7 @@ module.exports = {
   handleUpdateCartItem,
   createNewCart,
   createNewWishlist,
+  placeOrder,
   doesProductExist,
   doesCategoryExist,
   doesUserExist,
