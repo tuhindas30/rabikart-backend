@@ -412,7 +412,9 @@ router
 router
   .route("/orders")
   .get(OrderController.getOrdersByUserId)
-  .post(OrderController.approveOrder);
+  .post(OrderController.initiateOrder);
+
+router.post("/orders/confirm", OrderController.confirmOrder);
 
 /**
  * @swagger

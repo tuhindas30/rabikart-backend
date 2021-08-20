@@ -102,7 +102,12 @@ OrderSchema.methods = {
   },
 
   verifyPayment: function (orderId, paymentId, signature) {
-    return isPaymentLegit(orderId, paymentId, signature);
+    const isPaid = isPaymentLegit(orderId, paymentId, signature);
+    if (!isPaid) return isPaid;
+    this.payment.orderId = orderId;
+    this.payment.paymentId = paymentId;
+    this.payment.signature = signature;
+    return isPaid;
   },
 };
 

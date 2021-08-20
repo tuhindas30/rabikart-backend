@@ -22,25 +22,15 @@ const getOrdersByUserId = async (req, res, next) => {
   }
 };
 
-const approveOrder = async (req, res, next) => {
+const initiateOrder = async (req, res, next) => {
   const { userId } = req;
   const orderData = req.body;
-  const { orderId, paymentId, signature } = orderData.payment;
   const cart = await findCartByUserId(userId);
   if (!cart) {
     throw new HttpError(404, "No cart data found");
   }
-  const isPaid = isPaymentLegit(orderId, paymentId, signature);
-
-  if (!isPaid) {
-    return res.json({
-      status: "ERROR",
-      data: {},
-      message: "Payment is tampered",
-    });
-  }
   try {
-    let orders = await placeOrder({
+    let paymentObj = await placeOrder({
       userId,
       items: cart.items,
       totalPrice: cart.totalPrice,
@@ -51,7 +41,7 @@ const approveOrder = async (req, res, next) => {
 
     return res.json({
       status: "SUCCESS",
-      data: orders,
+      data: paymentObj,
       message: "Order approved successfully",
     });
   } catch (err) {
@@ -59,4 +49,17 @@ const approveOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { getOrdersByUserId, approveOrder };
+const confirmOrder = async (req, res, next) => {
+  const { orderId, paymentId, signature } = req.body;
+  const isPaid = await Order.verifyPayment(orderId, paymentId, signature);
+  if (!isPaid) {
+    throw new HttpError(400, "Payment is tampered");
+  }
+  return res.json({
+    status: "SUCCESS",
+    data: {},
+    message: "Payment is successfull",
+  });
+};
+
+module.exports = { getOrdersByUserId, initiateOrder, confirmOrder };

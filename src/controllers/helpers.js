@@ -98,10 +98,9 @@ const placeOrder = async ({ userId, items, totalPrice, data }) => {
     totalPrice,
     ...data,
   });
-  await orders.initiateOrder();
-  // await orders.populate("items.product").execPopulate();
+  const paymentObj = await orders.initiateOrder();
   await orders.save();
-  return orders;
+  return paymentObj;
 };
 
 const doesProductExist = async (productId) => {
