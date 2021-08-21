@@ -92,15 +92,15 @@ const createNewWishlist = async (userId, productId) => {
 };
 
 const placeOrder = async ({ userId, items, totalPrice, data }) => {
-  let orders = new Order({
+  const order = new Order({
     user: userId,
     items,
     totalPrice,
     ...data,
   });
-  const paymentObj = await orders.initiateOrder();
-  await orders.save();
-  return paymentObj;
+  const orderObj = await order.initiateOrder();
+  await order.save();
+  return { order, orderObj };
 };
 
 const doesProductExist = async (productId) => {
