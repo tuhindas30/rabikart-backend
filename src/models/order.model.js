@@ -56,24 +56,6 @@ const AddressSchema = new Schema(
   { _id: false }
 );
 
-const PaymentSchema = new Schema({
-  orderId: {
-    type: String,
-    default: "",
-    required: "Cannot add payment without a orderId",
-  },
-  paymentId: {
-    type: String,
-    default: "",
-    required: "Cannot add payment without its id",
-  },
-  signature: {
-    type: String,
-    default: "",
-    required: "Cannot add payment without a signature",
-  },
-});
-
 const OrderSchema = new Schema(
   {
     user: {
@@ -94,22 +76,27 @@ const OrderSchema = new Schema(
       type: Number,
       default: 0,
     },
-    payment: PaymentSchema,
+    payment: {
+      type: Object,
+      default: {},
+    },
   },
   { timestamps: true }
 );
 
 OrderSchema.methods = {
   initiateOrder: async function () {
-    return await createOrder(this.totalPrice, this._id);
+    const orderObj = await createOrder(this.totalPrice, this._id);
+    this.payment.orderId = orderObj.id;
+    return orderObj;
   },
 
-  verifyPayment: function (orderId, paymentId, signature) {
-    const isPaid = isPaymentLegit(orderId, paymentId, signature);
-    if (!isPaid) return isPaid;
-    this.payment.orderId = orderId;
-    this.payment.paymentId = paymentId;
-    this.payment.signature = signature;
+  verifyPayment: function (paymentId, signature) {
+    const isPaid = isPaymentLegit(this.payment.orderId, paymentId, signature);
+    if (isPaid) {
+      this.payment.paymentId = paymentId;
+      this.payment.signature = signature;
+    }
     return isPaid;
   },
 };
