@@ -414,7 +414,7 @@ router
   .get(OrderController.getOrdersByUserId)
   .post(OrderController.initiateOrder);
 
-router.post("/orders/confirm", OrderController.confirmOrder);
+router.post("/orders/:id/confirm", OrderController.confirmOrder);
 
 /**
  * @swagger
