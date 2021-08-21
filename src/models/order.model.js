@@ -81,7 +81,10 @@ const OrderSchema = new Schema(
       ref: "User",
       index: true,
     },
-    shipping: { AddressSchema },
+    shipping: {
+      type: AddressSchema,
+      required: true,
+    },
     items: {
       type: [OrderItemSchema],
       required: "Cannot place order without items",
@@ -91,7 +94,7 @@ const OrderSchema = new Schema(
       type: Number,
       default: 0,
     },
-    payment: { PaymentSchema },
+    payment: PaymentSchema,
   },
   { timestamps: true }
 );
