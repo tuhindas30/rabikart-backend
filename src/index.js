@@ -4,7 +4,35 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
 const { initializeMongoDB } = require("./db/db.connect");
+
+const specs = swaggerJsDoc({
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "RabiKart API",
+      version: "1.0.0",
+      description: "Backend API for RabiKart",
+    },
+    servers: [
+      {
+        url: "http://localhost:4000",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+  },
+  apis: ["./src/routes/*.js"],
+});
 
 const URI = process.env["MONGODB_URI"];
 const app = express();
@@ -19,10 +47,7 @@ const userRouter = require("./routes/user.router");
 const undefinedRoutesHandler = require("./middlewares/undefinedRoutesHandler");
 const errorHandler = require("./middlewares/errorHandler");
 
-app.get("/", (req, res) => {
-  res.send("Welcome to RabiKart server");
-});
-
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/products", productRouter);
 app.use("/categories", categoryRouter);
 app.use("/auth", authRouter);

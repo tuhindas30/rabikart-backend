@@ -27,7 +27,7 @@ const getCartByUserId = async (req, res, next) => {
 
 const addToCart = async (req, res, next) => {
   const { productId, quantity } = req.body;
-  let { userId } = req;
+  const { userId } = req;
   try {
     await doesProductExist(productId);
     let cart = await findCartByUserId(userId);
