@@ -18,7 +18,7 @@ const specs = swaggerJsDoc({
     },
     servers: [
       {
-        url: "http://localhost:4000",
+        url: "https://api-rabikart.herokuapp.com/",
       },
     ],
     components: {
