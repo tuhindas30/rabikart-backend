@@ -5,9 +5,7 @@ const { findCartByUserId, placeOrder } = require("./helpers");
 const getOrdersByUserId = async (req, res, next) => {
   const { userId } = req;
   try {
-    const orders = await Order.findOne({ user: userId }).populate(
-      "items.product"
-    );
+    const orders = await Order.find({ user: userId }).populate("items.product");
     if (!orders) {
       throw new HttpError(404, "No orders data found");
     }
