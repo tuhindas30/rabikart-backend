@@ -8,6 +8,12 @@ const secret = process.env.JWT_SECRET;
 const signup = async (req, res, next) => {
   const userData = req.body;
   try {
+    const isUserExist = await User.findOne({
+      email: userData.email,
+    });
+    if (isUserExist) {
+      throw new HttpError(400, "User already exist");
+    }
     let user = new User(userData);
     await user.setHashedPassword();
     await user.save();
@@ -27,7 +33,7 @@ const signin = async (req, res, next) => {
   try {
     let user = await User.findOne({ email });
     if (!user) {
-      throw new HttpError(401, "Email does not exist");
+      throw new HttpError(401, "User does not exist");
     }
     if (!(await user.checkPassword(password))) {
       throw new HttpError(401, "Email or password not matched");
