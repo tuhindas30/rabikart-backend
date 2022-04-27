@@ -59,7 +59,7 @@ const removeFromWishlist = async (req, res, next) => {
     );
     if (itemIndex > -1) {
       wishlist.items.splice(itemIndex, 1);
-      await wishlist.populate("items.populate").execPopulate();
+      await wishlist.populate("items.populate");
       wishlist = await wishlist.save();
       return res.json({
         status: "SUCCESS",

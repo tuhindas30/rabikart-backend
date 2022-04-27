@@ -36,7 +36,7 @@ const createNewProduct = async (req, res, next) => {
   const productData = req.body;
   try {
     let newProduct = new Product(productData);
-    await newProduct.populate("category").execPopulate();
+    await newProduct.populate("category");
     newProduct = await newProduct.save();
     res.json({
       status: "SUCCESS",
