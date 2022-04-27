@@ -120,7 +120,7 @@ const updateCart = async (req, res, next) => {
         quantity: item.quantity,
       });
     });
-    await newCart.populate("items.product").execPopulate();
+    await newCart.populate("items.product");
     newCart.calculateTotalPrice();
     newCart = await newCart.save();
     return res.json({
